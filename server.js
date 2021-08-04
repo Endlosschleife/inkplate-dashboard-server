@@ -91,7 +91,6 @@ app.get('/dashboard/:id', function (req, res) {
 });
 
 app.use("/screenshots", express.static(SCREENSHOTS_FOLDER));
-app.use("/", express.static('app'));
 
 launchBrowser().then(() => {
     app.listen(8081, function () {
