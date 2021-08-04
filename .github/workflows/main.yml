@@ -1,5 +1,5 @@
-name: Cat Siren Push
- 
+name: Docker Image Build and Publish
+
 on:
   push:
     branches: ['master']
