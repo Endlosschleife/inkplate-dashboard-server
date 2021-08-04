@@ -1,0 +1,17 @@
+{
+  "livingroom": {
+    "width": 800,
+    "height": 600,
+    "screens": [
+      {
+        "url": "http://localhost:4200/dashboard",
+        "from": 800,
+        "sleep": 30
+      }, {
+        "url": "http://localhost:4200/dashboard-night",
+        "from": 2300,
+        "sleepUntil": 800
+      }
+    ]
+  }
+}
