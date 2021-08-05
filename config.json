@@ -5,12 +5,12 @@
     "screens": [
       {
         "url": "http://localhost:4200/dashboard",
-        "from": 800,
+        "from": "08:00",
         "sleep": 30
       }, {
         "url": "http://localhost:4200/dashboard-night",
-        "from": 2300,
-        "sleepUntil": 800
+        "from": "22:15",
+        "sleepUntil": "08:00"
       }
     ]
   }
