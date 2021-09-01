@@ -35,7 +35,8 @@ const takeScreenshot = async (id, url, width, height) => {
         fs.mkdirSync(SCREENSHOTS_FOLDER);
     }
 
-    return page.screenshot({type: 'png', path: buildFileName(id)});
+    return page.screenshot({type: 'png', path: buildFileName(id)})
+        .then(_ => page.close());
 }
 
 const archiveScreenshot = (id) => {
