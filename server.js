@@ -3,6 +3,7 @@ const app = express();
 const fs = require("fs");
 const puppeteer = require('puppeteer');
 const moment = require('moment');
+const configHelper = require('./config-helper');
 
 const CHROMIUM_BINARY = process.env.CHROMIUM_BINARY;
 const SCREENSHOTS_FOLDER = 'screenshots/';
@@ -45,30 +46,11 @@ const archiveScreenshot = (id) => {
     }
 }
 
-const getScreen = (dashboardConfig) => {
-    let foundScreen;
-    const now = new Date();
-    const time = `${now.getHours()}:${now.getMinutes()}`;
-
-    console.log('looking for screen starting right before', time);
-
-    dashboardConfig.screens
-        .sort((a, b) => a.from.localeCompare(b.from))
-        .forEach(screen => {
-            if (screen.from <= time) {
-                foundScreen = screen;
-            }
-        });
-
-    console.log(foundScreen);
-    return foundScreen;
-}
-
 app.get('/dashboard/:id', function (req, res) {
 
     const id = req.params['id'];
     const dashboardConfig = config[id];
-    const screen = getScreen(dashboardConfig);
+    const screen = configHelper.getScreen(dashboardConfig);
 
     // calculate sleep time
     let timeToSleep = screen.sleep;
