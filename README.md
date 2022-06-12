@@ -23,24 +23,14 @@ services:
     container_name: inklplate-dashboard-server
     restart: always
     ports:
-      - "8082:8082"
+      - "8082:8081"
     hostname: dashboard-server
     environment:
-      - CHROMIUM_BINARY=/usr/bin/chromium-browser
+      - CHROMIUM_BINARY=/usr/bin/chromium
       - TZ=Europe/Berlin
     volumes:
       - ./config.json:/server/config.json
-    depends_on:
-      - inkplate-dashboard-webapp
     mem_limit: 300m
-
-  inkplate-dashboard-webapp:
-    image: ghcr.io/endlosschleife/inkplate-dashboard-webapp:latest
-    container_name: inklplate-dashboard-webapp
-    restart: always
-    hostname: webapp
-    environment:
-      - TZ=Europe/Berlin
 
 ```
 
