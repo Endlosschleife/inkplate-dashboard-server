@@ -27,15 +27,12 @@ const launchBrowser = () => {
 const takeScreenshot = async (id, url, width, height) => {
     const page = await browser.newPage();
     await page.setViewport({width, height});
-    await page.goto(url);
-    await Promise.all([
-        page.waitForSelector('.app', {
-            visible: true,
-        }),
-        page.waitForNavigation({
-            waitUntil: 'networkidle0',
-        })
-    ]);
+    await page.goto(url,{
+        waitUntil: 'networkidle0'
+    });
+    await page.waitForSelector('.app', {
+        visible: true,
+    });
 
     if (!fs.existsSync(SCREENSHOTS_FOLDER)) {
         fs.mkdirSync(SCREENSHOTS_FOLDER);
