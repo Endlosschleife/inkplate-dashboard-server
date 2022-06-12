@@ -1,4 +1,4 @@
-FROM node:14-alpine3.15
+FROM node:18-alpine3.15
 RUN apk add --no-cache \
       chromium \
       nss \
