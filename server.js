@@ -10,8 +10,8 @@ const SCREENSHOTS_FOLDER = 'screenshots/';
 
 let browser;
 const config = JSON.parse(fs.readFileSync('./config.json'));
-const buildArchiveFileName = (id) => `${SCREENSHOTS_FOLDER}${id}-archive.png`;
-const buildFileName = (id) => `${SCREENSHOTS_FOLDER}${id}.png`;
+const buildArchiveFileName = (id) => `${SCREENSHOTS_FOLDER}${id}-archive.jpg`;
+const buildFileName = (id) => `${SCREENSHOTS_FOLDER}${id}.jpg`;
 
 const launchBrowser = () => {
     return puppeteer.launch({
@@ -38,7 +38,8 @@ const takeScreenshot = async (id, url, width, height) => {
         fs.mkdirSync(SCREENSHOTS_FOLDER);
     }
 
-    return page.screenshot({type: 'png', path: buildFileName(id)})
+    const filename = buildFileName(id);
+    return page.screenshot({type: 'jpeg', path: filename})
         .then(_ => page.close());
 }
 
