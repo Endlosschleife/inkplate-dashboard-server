@@ -1,5 +1,18 @@
 const express = require('express');
+const promBundle = require("express-prom-bundle");
 const app = express();
+const metricsMiddleware = promBundle({
+    includeMethod: true,
+    includePath: true,
+    includeStatusCode: true,
+    includeUp: true,
+    promClient: {
+        collectDefaultMetrics: {}
+    }
+
+});
+const {Counter} = require("prom-client");
+
 const fs = require("fs");
 const puppeteer = require('puppeteer');
 const moment = require('moment');
@@ -12,6 +25,12 @@ let browser;
 const config = JSON.parse(fs.readFileSync('./config.json'));
 const buildArchiveFileName = (id) => `${SCREENSHOTS_FOLDER}${id}-archive.jpg`;
 const buildFileName = (id) => `${SCREENSHOTS_FOLDER}${id}.jpg`;
+
+const METRIC_GET_DASHBOARD_COUNT = new Counter({
+    name: 'get_dashboard_count',
+    help: 'Get dashboard counter',
+    labelNames: ['type', 'id']
+});
 
 const launchBrowser = () => {
     return puppeteer.launch({
@@ -27,7 +46,7 @@ const launchBrowser = () => {
 const takeScreenshot = async (id, url, width, height) => {
     const page = await browser.newPage();
     await page.setViewport({width, height});
-    await page.goto(url,{
+    await page.goto(url, {
         waitUntil: 'networkidle0'
     });
     await page.waitForSelector('.app', {
@@ -52,6 +71,8 @@ const archiveScreenshot = (id) => {
 app.get('/dashboard/:id', function (req, res) {
 
     const id = req.params['id'];
+    METRIC_GET_DASHBOARD_COUNT.labels({type: 'total', id: id}).inc();
+
     const dashboardConfig = config[id];
     const screen = configHelper.getScreen(dashboardConfig);
 
@@ -73,14 +94,17 @@ app.get('/dashboard/:id', function (req, res) {
             imageUrl: buildFileName(id),
             archivedImageUrl: buildArchiveFileName(id),
         });
+        METRIC_GET_DASHBOARD_COUNT.labels({type: 'success', id: id}).inc();
     }).catch(e => {
         console.error(e);
         res.sendStatus(500);
+        METRIC_GET_DASHBOARD_COUNT.labels({type: 'error', id: id}).inc();
         res.end();
     });
 });
 
 app.use("/screenshots", express.static(SCREENSHOTS_FOLDER));
+app.use(metricsMiddleware);
 
 launchBrowser().then(() => {
     app.listen(8081, function () {
